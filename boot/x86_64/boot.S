@@ -1,5 +1,6 @@
-/* GRUB enters in 32-bit protected mode. This stub builds identity mappings
- * for the first GiB, enables long mode, and calls the 64-bit C kernel.
+/* GRUB enters in 32-bit protected mode. This stub builds 4 GiB of identity
+ * mappings (including common PCI framebuffer apertures), enables long mode,
+ * and calls the 64-bit C kernel.
  */
 .section .multiboot, "a"
 .align 8
@@ -31,25 +32,42 @@ _start:
     movl %eax, boot_magic
     movl %ebx, boot_info_ptr
 
+    /* PML4[0] -> PDPT; PDPT[0..3] -> four page directories. */
     movl $pdpt_table, %eax
     orl $0x3, %eax
     movl %eax, pml4_table
     movl $0, pml4_table + 4
 
-    movl $pd_table, %eax
+    movl $pd_table_0, %eax
     orl $0x3, %eax
     movl %eax, pdpt_table
     movl $0, pdpt_table + 4
 
+    movl $pd_table_1, %eax
+    orl $0x3, %eax
+    movl %eax, pdpt_table + 8
+    movl $0, pdpt_table + 12
+
+    movl $pd_table_2, %eax
+    orl $0x3, %eax
+    movl %eax, pdpt_table + 16
+    movl $0, pdpt_table + 20
+
+    movl $pd_table_3, %eax
+    orl $0x3, %eax
+    movl %eax, pdpt_table + 24
+    movl $0, pdpt_table + 28
+
+    /* 2048 x 2 MiB pages = 4 GiB identity-mapped. */
     xorl %ecx, %ecx
 1:
     movl %ecx, %eax
     shll $21, %eax
     orl $0x83, %eax
-    movl %eax, pd_table(,%ecx,8)
-    movl $0, pd_table + 4(,%ecx,8)
+    movl %eax, pd_table_0(,%ecx,8)
+    movl $0, pd_table_0 + 4(,%ecx,8)
     incl %ecx
-    cmpl $512, %ecx
+    cmpl $2048, %ecx
     jne 1b
 
     movl %cr4, %eax
@@ -105,7 +123,10 @@ pml4_table: .skip 4096
 .align 4096
 pdpt_table: .skip 4096
 .align 4096
-pd_table: .skip 4096
+pd_table_0: .skip 4096
+pd_table_1: .skip 4096
+pd_table_2: .skip 4096
+pd_table_3: .skip 4096
 .align 16
 boot_magic: .skip 4
 boot_info_ptr: .skip 4
