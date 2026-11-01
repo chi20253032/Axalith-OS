@@ -1,27 +1,37 @@
 # AXALITH OS
 
-**An independent hybrid operating system for x86-64 and ARM64.**
+**An independently designed operating system powered by the Linux kernel.**
 
-AXALITH OS targets everyday desktop users. It combines an independently designed user experience and platform layer with a replaceable kernel backend. The first backend is Linux; a native AXALITH kernel is a long-term research track, not a near-term compatibility promise.
+AXALITH OS targets everyday desktop users on x86-64 and ARM64. It uses the Linux kernel as its sole kernel strategy. AXALITH owns the user experience, desktop shell, system applications, platform services, visual identity, and product integration. The goal is to deliver a coherent, independent OS experience that does not look or behave like a conventional Linux distribution.
 
 ## Project status
 
-- Milestone: 0.1 Developer Preview — x86-64 boot foundation
-- Architectures: x86-64 first; ARM64 platform bring-up follows
-- Kernel strategy: hybrid / replaceable backend
-- Graphics: framebuffer bootstrap first; Vulkan and vendor drivers later
-- Windows compatibility: staged application compatibility; Windows kernel drivers are not loaded natively by the Linux backend
+- Product kernel: Linux LTS; no alternative or in-house kernel is planned
+- Architectures: x86-64 first; ARM64 follows as a first-class target
+- Desktop: independently designed AXALITH shell and system applications
+- Graphics: Linux-supported graphics stack, with Vulkan as a preferred cross-vendor API
+- Windows compatibility: staged user-mode application compatibility; Windows kernel drivers are not loaded natively by Linux
 
-The 0.1 bootable image is a deliberately small bare-metal Multiboot2 x86-64 bring-up prototype. It validates the boot path, framebuffer handoff, and CI-based QEMU testing; it is not yet the Linux-backed product image or a general-purpose OS. The first user-facing product profile is still planned around a Linux LTS backend with AXALITH-owned platform and desktop layers.
+The existing 0.1 bootable image is a small bare-metal Multiboot2 experiment created before the Linux-only product decision. It validates an x86-64 boot path and QEMU smoke testing, but it is not the product kernel and will not be extended into a competing kernel. Preserve it as a historical engineering prototype. The next product milestone is a reproducible Linux LTS-based AXALITH image.
 
-## Build on Ubuntu 24.04
+## Product principles
+
+1. Linux is the sole kernel. Track an appropriate upstream LTS release and maintain a documented patch set.
+2. AXALITH must have its own visual identity, desktop shell, login experience, settings, file manager, notifications, installer, and update experience.
+3. Do not expose a generic Linux desktop as the finished product. Users should experience AXALITH, not a re-skinned upstream desktop.
+4. Keep hardware-specific integration behind stable AXALITH platform interfaces where practical.
+5. Preserve upstream notices and comply with every dependency's license.
+6. Never claim Windows application or driver compatibility without passing documented tests.
+7. Treat Windows kernel-driver compatibility as a separate, high-risk virtualization / device-assignment problem.
+
+## Build the historical 0.1 prototype on Ubuntu 24.04
 
 Install dependencies:
 
     sudo apt update
     sudo apt install -y build-essential binutils grub-pc-bin grub-common xorriso qemu-system-x86
 
-Build the kernel and bootable ISO:
+Build the legacy prototype ISO:
 
     make clean
     make iso
@@ -34,27 +44,16 @@ Serial diagnostics:
 
     make run-serial
 
-Requirements: x86-64 Linux host, GNU GCC/binutils, GRUB utilities, xorriso, and QEMU. The first milestone uses GRUB Multiboot2 and is not an installer or UEFI-native boot manager.
+This build does not produce the Linux-backed AXALITH product image. Requirements: x86-64 Linux host, GNU GCC/binutils, GRUB utilities, xorriso, and QEMU.
 
 ## Repository map
 
-    boot/                 Multiboot2 entry and x86-64 long-mode transition
-    kernel/               Freestanding kernel code
-    include/              Kernel headers and protocol definitions
-    grub/                 GRUB boot menu
+    boot/                 Legacy 0.1 Multiboot2 experiment
+    kernel/               Legacy freestanding prototype code
+    include/              Prototype headers and protocol definitions
+    grub/                 Prototype GRUB boot menu
     docs/                 Architecture, roadmap, development policy
     .github/workflows/    Continuous integration
-
-## Architecture policy
-
-1. Keep hardware-specific code behind documented interfaces.
-2. Keep architecture-specific boot and low-level code in separate directories.
-3. Do not make the platform layer depend directly on Linux implementation details.
-4. Preserve upstream notices and comply with every dependency's license.
-5. Never claim Windows application or driver compatibility without passing documented tests.
-6. Treat Windows kernel-driver compatibility as a separate, high-risk virtualization / device-assignment problem.
-
-See docs/ARCHITECTURE.md, docs/ROADMAP.md, and docs/DEVELOPMENT.md.
 
 ## License
 
