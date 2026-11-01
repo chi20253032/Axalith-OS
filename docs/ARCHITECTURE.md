@@ -2,25 +2,27 @@
 
 ## Product contract
 
-AXALITH OS targets everyday desktop users on x86-64 and ARM64. The user experience, platform services, package format, system API, and desktop shell are independently designed. The first product kernel backend is Linux LTS. A native kernel is a separate long-term research project and must not block a usable Linux-backed product. The 0.1 Multiboot2 image is a narrow bare-metal bring-up experiment used to validate x86-64 boot mechanics and automated QEMU testing; it is not the selected production backend.
+AXALITH OS targets everyday desktop users on x86-64 and ARM64. **The Linux kernel is the sole kernel strategy for AXALITH OS.** There is no parallel native-kernel product or long-term kernel-replacement track. AXALITH differentiates itself through its independently designed desktop, platform services, system applications, package and update experience, visual identity, and product integration.
+
+The existing 0.1 Multiboot2 image is a historical bare-metal bring-up experiment created before the Linux-only decision. It is not the production backend and should be maintained only as a reference / archival prototype unless a narrowly scoped maintenance fix is needed.
 
 ## Layer model
 
-1. Experience: desktop shell, compositor/window manager, file manager, settings, notifications, accessibility, first-party applications.
-2. Platform: service manager, package manager, application lifecycle, audio, networking, security policy, graphics API, update and recovery.
-3. Compatibility: Linux ABI, Windows user-mode API compatibility, application containers, virtual machines and device assignment.
-4. AXALITH Core: stable internal interfaces for memory, processes, devices, filesystems, IPC, timers, power, and graphics.
-5. Kernel backend: Linux LTS initially; experimental native kernel later.
-6. Hardware: CPU, memory, storage, display, GPU, input, network and firmware.
+1. Experience: AXALITH desktop shell, compositor/window management, file manager, settings, notifications, accessibility, first-party applications.
+2. AXALITH platform: service supervision, package management, application lifecycle, audio, networking, security policy, graphics integration, updates and recovery.
+3. Compatibility: Linux application ABI, Windows user-mode API compatibility, application containers, virtual machines and device assignment.
+4. AXALITH integration layer: stable interfaces and services that connect the AXALITH experience to the underlying operating system.
+5. Kernel: upstream Linux LTS, with a small, reviewable AXALITH patch set where required.
+6. Hardware: CPU, memory, storage, display, GPU, input, network and firmware, supported through the Linux kernel and its driver ecosystem.
 
-Upper layers depend on AXALITH interfaces, not Linux-specific implementation details. Linux-specific adapters live under the Linux backend.
+AXALITH components should use documented platform interfaces rather than depend on incidental implementation details. Where Linux-specific integration is necessary, isolate it in backend adapters and keep the boundary documented. This is an abstraction and maintainability goal, not a promise that AXALITH can later swap out Linux for another kernel.
 
 ## Architecture targets
 
 - x86-64 is the first implementation and validation target.
 - ARM64 is a first-class target with its own boot flow, toolchain, device tree / ACPI handling, firmware requirements, and hardware validation.
 - Shared code belongs in architecture-neutral libraries.
-- Architecture-specific code belongs in arch/x86_64 or arch/aarch64.
+- Architecture-specific integration belongs in clearly separated x86-64 and AArch64 modules.
 - Do not promise that an x86-64 binary or driver runs on ARM64 without emulation or a supported native build.
 
 ## GPU policy
@@ -42,13 +44,18 @@ Separate three compatibility goals:
 
 Never advertise complete Windows compatibility until a published compatibility matrix demonstrates it. Windows itself, Windows source code, proprietary Microsoft binaries, product keys, and Microsoft trademarks are not bundled without authorization.
 
-## Kernel backend interface
+## Linux kernel maintenance policy
 
-AXALITH Core defines versioned interfaces for physical and virtual memory, scheduling, interrupt and timer delivery, device discovery, block and character I/O, VFS, IPC, power events, and graphics presentation. The Linux backend maps these interfaces to Linux facilities. A future native backend must implement the same conformance suite before replacing Linux for any product profile.
+- Track a supported upstream Linux LTS baseline and document the exact version used by each release.
+- Prefer upstream functionality and out-of-tree integration over invasive kernel forks.
+- Keep AXALITH kernel patches small, reviewable, reproducible, and documented.
+- Preserve required license notices and provide corresponding source where applicable.
+- Establish a regular security-update and stable-backport process.
+- Validate kernel updates against boot, storage, networking, graphics, suspend/resume, and supported hardware test suites.
 
 ## Security baseline
 
-- Secure Boot support is a release requirement, not assumed in the bootstrap.
+- Secure Boot support is a release requirement, not assumed in the 0.1 prototype.
 - Signed system updates and rollback-capable deployments.
 - Least-privilege service model and per-application permissions.
 - Memory-safe languages for new privileged components where practical.
