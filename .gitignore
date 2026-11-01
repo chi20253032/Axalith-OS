@@ -1,0 +1,7 @@
+/build/
+/dist/
+*.o
+*.elf
+*.iso
+*.log
+.DS_Store
