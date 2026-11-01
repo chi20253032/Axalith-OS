@@ -133,3 +133,5 @@ boot_info_ptr: .skip 4
 .align 16
 boot_stack_bottom: .skip 16384
 boot_stack_top:
+
+.section .note.GNU-stack,"",@progbits
