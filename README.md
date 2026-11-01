@@ -12,7 +12,7 @@ AXALITH OS targets everyday desktop users. It combines an independently designed
 - Graphics: framebuffer bootstrap first; Vulkan and vendor drivers later
 - Windows compatibility: staged application compatibility; Windows kernel drivers are not loaded natively by the Linux backend
 
-The current bootstrap is a small Multiboot2 x86-64 kernel intended to boot in QEMU through GRUB. It draws a minimal AXALITH splash screen and reports boot status over serial. It is not yet a general-purpose OS.
+The 0.1 bootable image is a deliberately small bare-metal Multiboot2 x86-64 bring-up prototype. It validates the boot path, framebuffer handoff, and CI-based QEMU testing; it is not yet the Linux-backed product image or a general-purpose OS. The first user-facing product profile is still planned around a Linux LTS backend with AXALITH-owned platform and desktop layers.
 
 ## Build on Ubuntu 24.04
 
