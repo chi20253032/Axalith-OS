@@ -1,41 +1,49 @@
 # AXALITH OS Roadmap
 
-## 0.1 — Bootable developer preview
+## Kernel strategy — decided
+
+**AXALITH OS uses the Linux kernel exclusively.** The product will track an appropriate upstream Linux LTS baseline. No native AXALITH kernel development track is planned. Engineering effort is focused on the AXALITH platform, desktop, system applications, hardware integration, and product quality.
+
+## 0.1 — Historical bare-metal experiment
 
 - [x] x86-64 Multiboot2 entry and long-mode transition
 - [x] serial diagnostics
 - [x] framebuffer splash when GRUB supplies a supported 32-bit RGB framebuffer
 - [x] reproducible Makefile ISO target
-- [ ] QEMU CI boot smoke test
+- [x] QEMU CI boot smoke test
 - [ ] documented hardware test matrix
 
-## 0.2 — Kernel foundations
+Status: this is a pre-decision engineering prototype, not the Linux-backed product. Keep it as a reference; do not expand it into a competing kernel.
 
-- [ ] parse and validate complete boot information
-- [ ] physical memory map and page-frame allocator
-- [ ] virtual memory manager
-- [ ] GDT / IDT, exception handlers and interrupt controllers
-- [ ] PIT / APIC timer support
-- [ ] kernel heap allocator
-- [ ] panic screen and structured logging
-- [ ] keyboard and serial input
-
-## 0.3 — Linux-backed system prototype
+## 0.2 — Linux LTS product foundation
 
 - [ ] select and pin an appropriate Linux LTS baseline
-- [ ] create reproducible x86-64 image build
-- [ ] boot on QEMU and selected physical hardware
-- [ ] establish AXALITH Core interfaces and Linux adapters
-- [ ] service supervision, logging and update strategy
-- [ ] networking and storage support
+- [ ] define supported x86-64 hardware baseline and kernel configuration
+- [ ] create reproducible Linux-based image build
+- [ ] boot the image in QEMU and selected physical hardware
+- [ ] define AXALITH system partitioning, boot, init, and service supervision
+- [ ] establish logging, crash reporting, update, and recovery foundations
+- [ ] validate storage, networking, audio, input, and display basics
+- [ ] create software bill of materials and license inventory
 
-## 0.4 — Desktop and platform
+## 0.3 — AXALITH platform
 
-- [ ] independent compositor / shell design
-- [ ] display, input, audio and accessibility services
-- [ ] file manager and settings
+- [ ] define stable AXALITH platform services and APIs
+- [ ] application lifecycle and permission model
 - [ ] package manager and signed repositories
-- [ ] installer, recovery and rollback
+- [ ] system update, rollback, and recovery mechanism
+- [ ] networking, audio, Bluetooth, power, and device management
+- [ ] localization and accessibility foundations
+
+## 0.4 — Independent desktop experience
+
+- [ ] define AXALITH visual design system and interaction principles
+- [ ] implement independent compositor / shell
+- [ ] implement login, desktop, taskbar / dock, launcher, notifications, and window management
+- [ ] build AXALITH file manager and settings
+- [ ] build first-party system applications
+- [ ] installer and recovery user experience
+- [ ] ensure the finished experience does not resemble a generic Linux desktop
 
 ## 0.5 — GPU and application compatibility
 
@@ -44,25 +52,22 @@
 - [ ] explicit multi-GPU selection and monitoring
 - [ ] Windows user-mode compatibility layer integration
 - [ ] application compatibility test harness
-- [ ] Windows VM and PCIe passthrough prototype
+- [ ] Windows VM and PCIe passthrough prototype for selected devices
 
 ## 0.6 — ARM64
 
-- [ ] ARM64 cross-compilation toolchain
-- [ ] QEMU AArch64 boot target
-- [ ] firmware and device-tree / ACPI discovery
-- [ ] memory, interrupt and timer bring-up
-- [ ] supported ARM64 reference hardware
+- [ ] select supported ARM64 reference hardware
+- [ ] Linux LTS ARM64 image and boot flow
+- [ ] firmware and device-tree / ACPI validation
+- [ ] validate storage, graphics, networking, suspend/resume, and power
+- [ ] publish an ARM64 hardware compatibility list
 
-## 0.7+ — Product hardening
+## 0.7+ — Product hardening and release
 
-- [ ] secure boot and signed updates
+- [ ] Secure Boot and signed updates
 - [ ] accessibility and localization
 - [ ] installer and recovery testing
-- [ ] performance, power and reliability testing
+- [ ] performance, power, and reliability testing
 - [ ] security audit and software bill of materials
 - [ ] public hardware and application compatibility matrix
-
-## Long-term research — native AXALITH kernel
-
-This track starts only after the Linux-backed product has stable interfaces and conformance tests. The native kernel must pass the same platform tests before any supported product profile can use it. Linux remains an available backend; native-kernel progress does not silently remove hardware support.
+- [ ] release engineering, support policy, and security response process
