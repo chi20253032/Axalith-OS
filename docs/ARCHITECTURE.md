@@ -2,7 +2,7 @@
 
 ## Product contract
 
-AXALITH OS targets everyday desktop users on x86-64 and ARM64. The user experience, platform services, package format, system API, and desktop shell are independently designed. The first product kernel backend is Linux LTS. A native kernel is a separate long-term research project and must not block a usable Linux-backed product.
+AXALITH OS targets everyday desktop users on x86-64 and ARM64. The user experience, platform services, package format, system API, and desktop shell are independently designed. The first product kernel backend is Linux LTS. A native kernel is a separate long-term research project and must not block a usable Linux-backed product. The 0.1 Multiboot2 image is a narrow bare-metal bring-up experiment used to validate x86-64 boot mechanics and automated QEMU testing; it is not the selected production backend.
 
 ## Layer model
 
